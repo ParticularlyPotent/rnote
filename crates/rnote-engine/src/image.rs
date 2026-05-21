@@ -4,6 +4,7 @@ use anyhow::Context;
 use core::fmt::Debug;
 use image::ImageReader;
 use p2d::bounding_volume::{Aabb, BoundingVolume};
+use p2d::math::Vector2;
 use piet::RenderContext;
 use rnote_compose::ext::AabbExt;
 use rnote_compose::shapes::{Rectangle, Shapeable};
@@ -121,8 +122,8 @@ impl From<image::DynamicImage> for Image {
         let memory_format = ImageMemoryFormat::R8g8b8a8Premultiplied;
         let data = glib::Bytes::from_owned(dynamic_image.into_rgba8().to_vec());
         let bounds = Aabb::new(
-            na::point![0.0, 0.0],
-            na::point![f64::from(pixel_width), f64::from(pixel_height)],
+            Vector2::ZERO,
+            Vector2::new(pixel_width as f64, pixel_height as f64),
         );
 
         Self {
@@ -165,15 +166,15 @@ impl Drawable for Image {
 }
 
 impl Transformable for Image {
-    fn translate(&mut self, offset: na::Vector2<f64>) {
+    fn translate(&mut self, offset: Vector2) {
         self.rect.translate(offset)
     }
 
-    fn rotate(&mut self, angle: f64, center: na::Point2<f64>) {
+    fn rotate(&mut self, angle: f64, center: Vector2) {
         self.rect.rotate(angle, center)
     }
 
-    fn scale(&mut self, scale: na::Vector2<f64>) {
+    fn scale(&mut self, scale: Vector2) {
         self.rect.scale(scale)
     }
 }
